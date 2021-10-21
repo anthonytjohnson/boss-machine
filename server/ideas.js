@@ -2,7 +2,7 @@ const ideasRouter = require('express').Router();
 
 module.exports = ideasRouter;
 
-const {
+const { 
   addToDatabase,
   getAllFromDatabase,
   getFromDatabaseById,
@@ -10,7 +10,9 @@ const {
   deleteFromDatabasebyId,
 } = require('./db');
 
-ideasRouter.param('minionId', (req, res, next, id) => {
+const checkMillionDollarIdea = require('./checkMillionDollarIdea');
+
+ideasRouter.param('id', (req, res, next, id) => {
   const idea = getFromDatabaseById('ideas', id);
   if (idea) {
     req.idea = idea;
@@ -27,11 +29,11 @@ ideasRouter.get('/', (req, res, next) => {
 ideasRouter.post('/', checkMillionDollarIdea, (req, res, next) => {
   const newIdea = addToDatabase('ideas', req.body);
   res.status(201).send(newIdea);
-})
+});
 
 ideasRouter.get('/:id', (req, res, next) => {
   res.send(req.idea);
-})
+});
 
 ideasRouter.put('/:id', checkMillionDollarIdea, (req, res, next) => {
   let updatedInstance = updateInstanceInDatabase('ideas', req.body);
